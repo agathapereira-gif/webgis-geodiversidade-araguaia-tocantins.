@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,99 +5,198 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-  <title>GeoDiversidade AT | Atlas Interativo</title>
+  <title>GeoDiversidade AT | UFG - IESA</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  >
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
+    :root {
+      --verde: #174c42;
+      --verde-claro: #e7f1ec;
+      --fundo: #f5f7f6;
+      --texto: #243b35;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7f6;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--texto);
+      background: var(--fundo);
     }
 
     header {
-      background: #174c42;
+      background: var(--verde);
       color: white;
-      padding: 20px;
+      padding: 17px 25px;
       text-align: center;
+      border-bottom: 4px solid #8eb9a1;
+    }
+
+    .instituicao {
+      font-size: 11px;
+      letter-spacing: 1px;
+      line-height: 1.8;
+      opacity: 0.9;
+      text-transform: uppercase;
     }
 
     header h1 {
-      margin: 0 0 8px;
-      font-size: 26px;
+      margin: 9px 0 5px;
+      font-size: 29px;
+      letter-spacing: 0.5px;
     }
 
-    header p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    #map {
-      height: calc(100vh - 105px);
-      min-height: 400px;
-      width: 100%;
-    }
-
-    .info {
-      background: white;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px #0003;
-      max-width: 260px;
+    .subtitulo {
+      font-size: 13px;
       line-height: 1.5;
+      opacity: 0.95;
     }
 
-    .info h3 {
-      margin: 0 0 8px;
-      color: #174c42;
+    .layout {
+      display: flex;
+      height: calc(100vh - 178px);
+      min-height: 450px;
     }
 
-    .legend {
+    aside {
+      width: 300px;
+      flex-shrink: 0;
       background: white;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid #dce5df;
+    }
+
+    aside h2 {
+      font-size: 17px;
+      color: var(--verde);
+      margin: 0 0 12px;
+    }
+
+    aside h3 {
+      font-size: 14px;
+      color: var(--verde);
+      margin: 22px 0 10px;
+      border-bottom: 1px solid #dce5df;
+      padding-bottom: 8px;
+    }
+
+    aside p {
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .camada {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px;
+      margin-bottom: 7px;
+      border-radius: 6px;
+      background: var(--fundo);
+      font-size: 13px;
+    }
+
+    .camada input {
+      accent-color: var(--verde);
+    }
+
+    .camada.indisponivel {
+      opacity: 0.55;
+    }
+
+    .aviso {
+      background: var(--verde-claro);
+      border-left: 3px solid var(--verde);
       padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px #0003;
+      margin-top: 18px;
+      font-size: 12px;
       line-height: 1.6;
     }
 
-    .legend h4 {
-      margin: 0 0 8px;
+    .mapa-container {
+      flex: 1;
+      min-width: 0;
+      position: relative;
     }
 
-    .legend-color {
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .legenda {
+      background: white;
+      padding: 12px;
+      border-radius: 7px;
+      box-shadow: 0 2px 9px #0003;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .legenda strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--verde);
+    }
+
+    .simbolo {
       display: inline-block;
-      width: 18px;
+      width: 20px;
       height: 12px;
-      background: #38a169;
-      border: 2px solid #174c42;
+      background: #38a16944;
+      border: 2px solid var(--verde);
       margin-right: 6px;
       vertical-align: middle;
     }
 
-    .leaflet-control-layers {
-      border-radius: 8px;
+    footer {
+      background: #eef2ef;
+      color: #52645d;
+      text-align: center;
+      padding: 12px 15px;
+      font-size: 11px;
+      line-height: 1.5;
+      border-top: 1px solid #dce5df;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
+      header {
+        padding: 14px 12px;
+      }
+
       header h1 {
-        font-size: 20px;
+        font-size: 23px;
       }
 
-      header p {
-        font-size: 12px;
+      .instituicao {
+        font-size: 9px;
       }
 
-      .info {
-        max-width: 190px;
-        font-size: 12px;
+      .subtitulo {
+        font-size: 11px;
+      }
+
+      .layout {
+        flex-direction: column;
+        height: auto;
+      }
+
+      aside {
+        width: 100%;
+        max-height: 270px;
+        padding: 15px;
+      }
+
+      .mapa-container {
+        height: 60vh;
+        min-height: 380px;
       }
     }
   </style>
@@ -106,44 +204,148 @@
 
 <body>
 
+  <!-- CABEÇALHO INSTITUCIONAL -->
   <header>
+    <div class="instituicao">
+      Universidade Federal de Goiás - UFG
+      <br>
+      Instituto de Estudos Socioambientais - IESA
+    </div>
+
     <h1>GeoDiversidade AT</h1>
-    <p>
+
+    <div class="subtitulo">
       Atlas Interativo da Geodiversidade Fluvial
-      da Bacia Araguaia–Tocantins
-    </p>
+      da Bacia Araguaia-Tocantins
+    </div>
   </header>
 
-  <div id="map"></div>
+  <main class="layout">
+
+    <!-- PAINEL LATERAL -->
+    <aside>
+      <h2>Sobre o projeto</h2>
+
+      <p>
+        O GeoDiversidade AT é uma plataforma
+        de visualização e divulgação científica
+        dedicada ao estudo da geodiversidade
+        fluvial da Bacia Araguaia-Tocantins.
+      </p>
+
+      <p style="margin-top: 10px;">
+        O atlas apresenta a área de estudo e
+        será ampliado com mapas temáticos e
+        resultados do Índice de Geodiversidade
+        desenvolvido na pesquisa.
+      </p>
+
+      <h3>Camadas temáticas</h3>
+
+      <label class="camada">
+        <input type="checkbox"
+          id="controleBacia" checked>
+        Limite da bacia hidrográfica
+      </label>
+
+      <label class="camada indisponivel">
+        <input type="checkbox" disabled>
+        Geologia
+      </label>
+
+      <label class="camada indisponivel">
+        <input type="checkbox" disabled>
+        Tipos de solo
+      </label>
+
+      <label class="camada indisponivel">
+        <input type="checkbox" disabled>
+        Compartimentos geomorfológicos
+      </label>
+
+      <label class="camada indisponivel">
+        <input type="checkbox" disabled>
+        Formas de relevo
+      </label>
+
+      <label class="camada indisponivel">
+        <input type="checkbox" disabled>
+        Índice de Geodiversidade
+      </label>
+
+      <div class="aviso">
+        <strong>Pesquisa em desenvolvimento</strong>
+        <br>
+        Os mapas temáticos e o Índice de
+        Geodiversidade serão disponibilizados
+        após a conclusão e validação dos dados.
+      </div>
+
+      <h3>Metodologia</h3>
+
+      <p>
+        A pesquisa utiliza técnicas de
+        geoprocessamento e análise espacial
+        em ambiente SIG para caracterizar
+        a geodiversidade da área estudada.
+      </p>
+
+      <h3>Instituição</h3>
+
+      <p>
+        Universidade Federal de Goiás (UFG)
+        <br>
+        Instituto de Estudos Socioambientais
+        (IESA)
+      </p>
+    </aside>
+
+    <!-- MAPA -->
+    <section class="mapa-container">
+      <div id="map"></div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer>
+    GeoDiversidade AT | Pesquisa acadêmica
+    desenvolvida no âmbito da UFG - IESA
+    <br>
+    Plataforma de divulgação científica.
+    Não constitui portal institucional oficial.
+  </footer>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
   </script>
 
   <script>
-    // 1. Inicialização do mapa
+    // INICIALIZAÇÃO DO MAPA
     const map = L.map('map').setView([-12, -49], 5);
 
-    // 2. Mapas-base
+    // MAPA-BASE OPENSTREETMAP
     const mapaRuas = L.tileLayer(
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution:
+          '&copy; OpenStreetMap contributors'
       }
     ).addTo(map);
 
+    // MAPA-BASE DE RELEVO
     const mapaRelevo = L.tileLayer(
       'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
       {
         maxZoom: 17,
         attribution:
-          'Map data: &copy; OpenStreetMap contributors | ' +
-          'Map style: &copy; OpenTopoMap'
+          '&copy; OpenStreetMap contributors | ' +
+          '&copy; OpenTopoMap'
       }
     );
 
-    // 3. Camada da bacia
+    // CAMADA VETORIAL DA BACIA
     const camadaBacia = L.geoJSON(null, {
       style: {
         color: '#174c42',
@@ -154,29 +356,37 @@
       },
 
       onEachFeature: function(feature, layer) {
-        const propriedades = feature.properties || {};
+        const props = feature.properties || {};
 
         const nome =
-          propriedades.nome_bacia ||
-          propriedades.name ||
+          props.nome_bacia ||
+          props.name ||
           'Bacia Tocantins-Araguaia';
 
-        layer.bindPopup(
-          '<strong>' + nome + '</strong><br>' +
-          'Área de estudo do GeoDiversidade AT'
-        );
+        // Evita inserir texto externo como HTML
+        const elemento = document.createElement('div');
+        const titulo = document.createElement('strong');
+
+        titulo.textContent = nome;
+        elemento.appendChild(titulo);
+
+        const descricao = document.createElement('p');
+        descricao.textContent =
+          'Área de estudo do GeoDiversidade AT';
+
+        elemento.appendChild(descricao);
+        layer.bindPopup(elemento);
       }
     }).addTo(map);
 
-    // 4. Carregar o arquivo GeoJSON
+    // CARREGAMENTO DO GEOJSON
     fetch('bacia araguaia.geojson')
       .then(response => {
         if (!response.ok) {
           throw new Error(
-            'Erro ao carregar o arquivo da bacia'
+            'Não foi possível carregar o GeoJSON'
           );
         }
-
         return response.json();
       })
       .then(data => {
@@ -194,48 +404,52 @@
         console.error(error);
 
         alert(
-          'Não foi possível carregar o limite da bacia. ' +
-          'Verifique o nome do arquivo GeoJSON no GitHub.'
+          'Erro ao carregar o limite da bacia. ' +
+          'Confira se o GeoJSON está no repositório.'
         );
       });
 
-    // 5. Controle de camadas
-    const mapasBase = {
-      'Mapa de ruas': mapaRuas,
-      'Mapa de relevo': mapaRelevo
-    };
+    // CONTROLE DA CAMADA DA BACIA
+    document.getElementById('controleBacia')
+      .addEventListener('change', function() {
+        if (this.checked) {
+          map.addLayer(camadaBacia);
+        } else {
+          map.removeLayer(camadaBacia);
+        }
+      });
 
-    const camadasTematicas = {
-      'Limite da Bacia Tocantins-Araguaia': camadaBacia
-    };
-
+    // CONTROLE DOS MAPAS-BASE
     L.control.layers(
-      mapasBase,
-      camadasTematicas,
       {
-        collapsed: false,
-        position: 'topright'
+        'Mapa de ruas': mapaRuas,
+        'Mapa de relevo': mapaRelevo
+      },
+      {},
+      {
+        position: 'topright',
+        collapsed: true
       }
     ).addTo(map);
 
-    // 6. Escala cartográfica
+    // ESCALA CARTOGRÁFICA
     L.control.scale({
       metric: true,
       imperial: false,
       position: 'bottomleft'
     }).addTo(map);
 
-    // 7. Legenda
+    // LEGENDA
     const legenda = L.control({
       position: 'bottomright'
     });
 
     legenda.onAdd = function() {
-      const div = L.DomUtil.create('div', 'legend');
+      const div = L.DomUtil.create('div', 'legenda');
 
       div.innerHTML = `
-        <h4>Legenda</h4>
-        <span class="legend-color"></span>
+        <strong>Legenda</strong>
+        <span class="simbolo"></span>
         Limite da bacia
       `;
 
@@ -243,30 +457,8 @@
     };
 
     legenda.addTo(map);
-
-    // 8. Informações do projeto
-    const informacoes = L.control({
-      position: 'topleft'
-    });
-
-    informacoes.onAdd = function() {
-      const div = L.DomUtil.create('div', 'info');
-
-      div.innerHTML = `
-        <h3>GeoDiversidade AT</h3>
-        <strong>Área de estudo:</strong><br>
-        Bacia Tocantins-Araguaia
-        <br><br>
-        <strong>Objetivo:</strong><br>
-        Visualização e divulgação científica
-        da geodiversidade fluvial.
-      `;
-
-      return div;
-    };
-
-    informacoes.addTo(map);
   </script>
 
 </body>
 </html>
+
