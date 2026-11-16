@@ -1,17 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoDiversidade AT</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <title>GeoDiversidade AT | Atlas Interativo</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      background: #f5f7f6;
     }
 
     header {
@@ -21,38 +31,242 @@
       text-align: center;
     }
 
-    h1 {
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    header p {
       margin: 0;
+      font-size: 14px;
     }
 
     #map {
-      height: calc(100vh - 110px);
+      height: calc(100vh - 105px);
       min-height: 400px;
+      width: 100%;
+    }
+
+    .info {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0003;
+      max-width: 260px;
+      line-height: 1.5;
+    }
+
+    .info h3 {
+      margin: 0 0 8px;
+      color: #174c42;
+    }
+
+    .legend {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0003;
+      line-height: 1.6;
+    }
+
+    .legend h4 {
+      margin: 0 0 8px;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 18px;
+      height: 12px;
+      background: #38a169;
+      border: 2px solid #174c42;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .leaflet-control-layers {
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 20px;
+      }
+
+      header p {
+        font-size: 12px;
+      }
+
+      .info {
+        max-width: 190px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 
 <body>
+
   <header>
     <h1>GeoDiversidade AT</h1>
-    <p>Atlas Interativo da Geodiversidade Fluvial
-    da Bacia Araguaia–Tocantins</p>
+    <p>
+      Atlas Interativo da Geodiversidade Fluvial
+      da Bacia Araguaia–Tocantins
+    </p>
   </header>
 
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
 
   <script>
+    // 1. Inicialização do mapa
     const map = L.map('map').setView([-12, -49], 5);
 
-    L.tileLayer(
+    // 2. Mapas-base
+    const mapaRuas = L.tileLayer(
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
       }
     ).addTo(map);
+
+    const mapaRelevo = L.tileLayer(
+      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 17,
+        attribution:
+          'Map data: &copy; OpenStreetMap contributors | ' +
+          'Map style: &copy; OpenTopoMap'
+      }
+    );
+
+    // 3. Camada da bacia
+    const camadaBacia = L.geoJSON(null, {
+      style: {
+        color: '#174c42',
+        weight: 3,
+        opacity: 1,
+        fillColor: '#38a169',
+        fillOpacity: 0.20
+      },
+
+      onEachFeature: function(feature, layer) {
+        const propriedades = feature.properties || {};
+
+        const nome =
+          propriedades.nome_bacia ||
+          propriedades.name ||
+          'Bacia Tocantins-Araguaia';
+
+        layer.bindPopup(
+          '<strong>' + nome + '</strong><br>' +
+          'Área de estudo do GeoDiversidade AT'
+        );
+      }
+    }).addTo(map);
+
+    // 4. Carregar o arquivo GeoJSON
+    fetch('bacia araguaia.geojson')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            'Erro ao carregar o arquivo da bacia'
+          );
+        }
+
+        return response.json();
+      })
+      .then(data => {
+        camadaBacia.addData(data);
+
+        const limites = camadaBacia.getBounds();
+
+        if (limites.isValid()) {
+          map.fitBounds(limites, {
+            padding: [20, 20]
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+
+        alert(
+          'Não foi possível carregar o limite da bacia. ' +
+          'Verifique o nome do arquivo GeoJSON no GitHub.'
+        );
+      });
+
+    // 5. Controle de camadas
+    const mapasBase = {
+      'Mapa de ruas': mapaRuas,
+      'Mapa de relevo': mapaRelevo
+    };
+
+    const camadasTematicas = {
+      'Limite da Bacia Tocantins-Araguaia': camadaBacia
+    };
+
+    L.control.layers(
+      mapasBase,
+      camadasTematicas,
+      {
+        collapsed: false,
+        position: 'topright'
+      }
+    ).addTo(map);
+
+    // 6. Escala cartográfica
+    L.control.scale({
+      metric: true,
+      imperial: false,
+      position: 'bottomleft'
+    }).addTo(map);
+
+    // 7. Legenda
+    const legenda = L.control({
+      position: 'bottomright'
+    });
+
+    legenda.onAdd = function() {
+      const div = L.DomUtil.create('div', 'legend');
+
+      div.innerHTML = `
+        <h4>Legenda</h4>
+        <span class="legend-color"></span>
+        Limite da bacia
+      `;
+
+      return div;
+    };
+
+    legenda.addTo(map);
+
+    // 8. Informações do projeto
+    const informacoes = L.control({
+      position: 'topleft'
+    });
+
+    informacoes.onAdd = function() {
+      const div = L.DomUtil.create('div', 'info');
+
+      div.innerHTML = `
+        <h3>GeoDiversidade AT</h3>
+        <strong>Área de estudo:</strong><br>
+        Bacia Tocantins-Araguaia
+        <br><br>
+        <strong>Objetivo:</strong><br>
+        Visualização e divulgação científica
+        da geodiversidade fluvial.
+      `;
+
+      return div;
+    };
+
+    informacoes.addTo(map);
   </script>
+
 </body>
 </html>
