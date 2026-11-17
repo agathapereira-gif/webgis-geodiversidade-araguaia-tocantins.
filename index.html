@@ -16,110 +16,421 @@
       --verde-claro: #e7f1ec;
       --fundo: #f5f7f6;
       --texto: #243b35;
+      --linha: #dce5df;
+      --suave: #6b7f77;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    /* A página ocupa exatamente a tela: nada de rolagem da página */
+    html, body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
       color: var(--texto);
       background: var(--fundo);
     }
 
     header {
+      flex: none;
       background: var(--verde);
       color: white;
-      padding: 17px 25px;
+      padding: 9px 25px 10px;
       text-align: center;
-      border-bottom: 4px solid #8eb9a1;
+      border-bottom: 3px solid #8eb9a1;
     }
 
     .instituicao {
-      font-size: 11px;
+      font-size: 10.5px;
       letter-spacing: 1px;
-      line-height: 1.8;
+      line-height: 1.5;
       opacity: 0.9;
       text-transform: uppercase;
     }
 
+    .instituicao .sep {
+      margin: 0 8px;
+      opacity: 0.6;
+    }
+
+    .instituicao br {
+      display: none;
+    }
+
     header h1 {
-      margin: 9px 0 5px;
-      font-size: 29px;
+      margin: 3px 0 2px;
+      font-size: 25px;
+      line-height: 1.15;
       letter-spacing: 0.5px;
     }
 
     .subtitulo {
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 12px;
+      line-height: 1.4;
       opacity: 0.95;
     }
 
     .layout {
+      flex: 1;
+      min-height: 0;
       display: flex;
-      height: calc(100vh - 178px);
-      min-height: 450px;
     }
 
+    /* ---------- MENU LATERAL FIXO ---------- */
     aside {
-      width: 300px;
-      flex-shrink: 0;
+      width: 340px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 14px 16px;
       background: white;
-      padding: 20px;
-      overflow-y: auto;
-      border-right: 1px solid #dce5df;
-    }
-
-    aside h2 {
-      font-size: 17px;
-      color: var(--verde);
-      margin: 0 0 12px;
+      border-right: 1px solid var(--linha);
+      overflow-y: auto; /* só aparece se a tela for muito baixa */
     }
 
     aside h3 {
-      font-size: 14px;
-      color: var(--verde);
-      margin: 22px 0 10px;
-      border-bottom: 1px solid #dce5df;
-      padding-bottom: 8px;
-    }
-
-    aside p {
+      margin: 4px 0 0;
+      padding-bottom: 5px;
       font-size: 13px;
-      line-height: 1.7;
-      margin: 0;
+      color: var(--verde);
+      border-bottom: 1px solid var(--linha);
     }
 
-    .camada {
+    aside h3 em {
+      float: right;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 11.5px;
+      color: var(--suave);
+    }
+
+    .busca {
+      position: relative;
+    }
+
+    .busca svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--suave);
+    }
+
+    .busca input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      background: var(--fundo);
+      font: inherit;
+      font-size: 13px;
+      color: var(--texto);
+    }
+
+    .interruptor {
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 10px;
-      margin-bottom: 7px;
-      border-radius: 6px;
-      background: var(--fundo);
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 12px;
+      border: 1px solid var(--linha);
+      border-radius: 10px;
       font-size: 13px;
+      cursor: pointer;
     }
 
-    .camada input {
-      accent-color: var(--verde);
+    .interruptor input {
+      position: absolute;
+      opacity: 0;
     }
 
-    .camada.indisponivel {
+    .interruptor .trilho {
+      position: relative;
+      flex: none;
+      width: 34px;
+      height: 20px;
+      border-radius: 999px;
+      background: #cfd9d3;
+      transition: background .15s;
+    }
+
+    .interruptor .trilho::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 2px #0004;
+      transition: transform .15s;
+    }
+
+    .interruptor input:checked + .trilho {
+      background: var(--verde);
+    }
+
+    .interruptor input:checked + .trilho::after {
+      transform: translateX(14px);
+    }
+
+    .interruptor input:focus-visible + .trilho,
+    .cartao > button:focus-visible,
+    .busca input:focus-visible,
+    .info-botoes button:focus-visible,
+    .legenda button:focus-visible {
+      outline: 2px solid var(--verde);
+      outline-offset: 2px;
+    }
+
+    /* cartões compactos: altura fixa, o menu não cresce */
+    .cartoes {
+      display: grid;
+      gap: 6px;
+    }
+
+    .cartao {
+      border: 1px solid var(--linha);
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .cartao.ativo {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 1px var(--verde);
+    }
+
+    .cartao.indisponivel {
       opacity: 0.55;
+    }
+
+    .cartao > button {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+
+    .cartao.indisponivel > button {
+      cursor: default;
+    }
+
+    .cartao .ic {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--verde-claro);
+      color: var(--verde);
+    }
+
+    .cartao.ativo .ic {
+      background: var(--verde);
+      color: white;
+    }
+
+    .cartao .txt {
+      display: grid;
+      min-width: 0;
+    }
+
+    .cartao .nome {
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    .cartao .nome-curto {
+      display: none;
+    }
+
+    .cartao .meta {
+      font-size: 11px;
+      color: var(--suave);
+    }
+
+    .cartao .radio {
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #cfd9d3;
+    }
+
+    .cartao.ativo .radio {
+      border-color: var(--verde);
+    }
+
+    .cartao.ativo .radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--verde);
+    }
+
+    .faixa {
+      display: flex;
+      height: 4px;
+      margin: 0 10px 7px;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .faixa i {
+      flex: 1;
+    }
+
+    .cartao.ativo .faixa {
+      display: none;
+    }
+
+    .achado {
+      margin: 0 10px 7px;
+      font-size: 11px;
+      color: var(--verde);
     }
 
     .aviso {
       background: var(--verde-claro);
       border-left: 3px solid var(--verde);
-      padding: 12px;
-      margin-top: 18px;
-      font-size: 12px;
-      line-height: 1.6;
+      padding: 8px 11px;
+      font-size: 11.5px;
+      line-height: 1.45;
     }
 
+    .rodape-painel {
+      margin-top: auto;
+    }
+
+    .info-botoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .info-botoes button {
+      flex: 1;
+      padding: 8px 4px;
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      background: var(--fundo);
+      font: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--verde);
+      cursor: pointer;
+    }
+
+    .info-botoes button:hover {
+      background: var(--verde-claro);
+      border-color: var(--verde);
+    }
+
+    .botao-info-movel {
+      display: none;
+    }
+
+    /* ---------- JANELA DE INFORMAÇÕES ---------- */
+    dialog.info {
+      width: min(470px, 92vw);
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      color: var(--texto);
+      box-shadow: 0 12px 40px #0006;
+    }
+
+    dialog.info::backdrop {
+      background: #0a1f1a99;
+    }
+
+    dialog.info .topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 0;
+    }
+
+    dialog.info h2 {
+      margin: 0;
+      font-size: 17px;
+      color: var(--verde);
+    }
+
+    dialog.info .fechar {
+      border: 0;
+      background: none;
+      font-size: 24px;
+      line-height: 1;
+      color: var(--suave);
+      cursor: pointer;
+    }
+
+    dialog.info .corpo {
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: 8px 18px 18px;
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+
+    dialog.info .corpo h3 {
+      margin: 14px 0 4px;
+      font-size: 15px;
+      color: var(--verde);
+      border: 0;
+      padding: 0;
+    }
+
+    dialog.info .corpo p {
+      margin: 0 0 8px;
+    }
+
+    dialog.info .corpo .grupo {
+      margin: 14px 0 0;
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--suave);
+    }
+
+    dialog.info .corpo .equipe {
+      margin: 6px 0 4px;
+      padding: 0;
+      list-style: none;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    dialog.info .corpo .equipe li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--linha);
+    }
+
+    dialog.info .corpo .equipe li:last-child {
+      border-bottom: 0;
+    }
+
+    /* ---------- MAPA E LEGENDA ---------- */
     .mapa-container {
       flex: 1;
       min-width: 0;
@@ -132,17 +443,48 @@
     }
 
     .legenda {
-      background: white;
-      padding: 12px;
+      max-width: calc(100vw - 28px);
+      padding: 9px 12px;
       border-radius: 7px;
+      background: white;
       box-shadow: 0 2px 9px #0003;
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.5;
+    }
+
+    .legenda .cab-leg {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-weight: bold;
+      color: var(--verde);
+      cursor: pointer;
+    }
+
+    .legenda .cab-leg::after {
+      content: '\25BE';
+      font-size: 11px;
+    }
+
+    .legenda.recolhida .cab-leg::after {
+      content: '\25B4';
+    }
+
+    .legenda.recolhida .corpo-leg {
+      display: none;
+    }
+
+    .legenda .corpo-leg {
+      margin-top: 7px;
     }
 
     .legenda strong {
       display: block;
-      margin-bottom: 7px;
+      margin: 8px 0 5px;
       color: var(--verde);
     }
 
@@ -156,47 +498,279 @@
       vertical-align: middle;
     }
 
+    .legenda .atalhos {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .legenda .atalhos button {
+      font: inherit;
+      font-size: 11px;
+      padding: 1px 9px;
+      border: 1px solid #b7c4be;
+      border-radius: 999px;
+      background: #f5f8f6;
+      cursor: pointer;
+    }
+
+    .legenda .atalhos button:hover {
+      border-color: var(--verde);
+      color: var(--verde);
+    }
+
+    /* listas longas se dividem em colunas: a legenda não rola */
+    .legenda .classes.duas {
+      column-count: 2;
+      column-gap: 14px;
+    }
+
+    .cl {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 2px 4px;
+      border-radius: 5px;
+      line-height: 1.25;
+      cursor: pointer;
+      break-inside: avoid;
+    }
+
+    .cl:hover {
+      background: var(--verde-claro);
+    }
+
+    .cl input {
+      flex: none;
+      margin: 0;
+      accent-color: var(--verde);
+    }
+
+    .cl i {
+      flex: none;
+      width: 18px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid #0004;
+    }
+
+    .cl.off span {
+      color: var(--suave);
+      text-decoration: line-through;
+    }
+
+    .cl.off i {
+      opacity: .3;
+    }
+
+    .opac {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--linha);
+      font-size: 11.5px;
+      color: var(--suave);
+    }
+
+    .opac input {
+      width: 100%;
+      min-width: 90px;
+      accent-color: var(--verde);
+    }
+
+    .opac output {
+      min-width: 3.5ch;
+      text-align: right;
+      color: var(--texto);
+    }
+
+    .popup-titulo {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--verde);
+    }
+
+    .popup-linha {
+      line-height: 1.45;
+    }
+
     footer {
+      flex: none;
+      padding: 5px 15px;
       background: #eef2ef;
       color: #52645d;
       text-align: center;
-      padding: 12px 15px;
-      font-size: 11px;
-      line-height: 1.5;
-      border-top: 1px solid #dce5df;
+      font-size: 10.5px;
+      line-height: 1.35;
+      border-top: 1px solid var(--linha);
     }
 
-    @media (max-width: 700px) {
-      header {
-        padding: 14px 12px;
+    /* telas de laptop: o título "Área de estudo" é dispensável */
+    @media (max-height: 820px) and (min-width: 701px) {
+      .titulo-area {
+        display: none;
+      }
+    }
+
+    /* telas baixas: cartões ainda mais enxutos */
+    @media (max-height: 760px) {
+      aside {
+        gap: 7px;
+        padding: 10px 14px;
+      }
+
+      .faixa {
+        display: none;
+      }
+
+      .cartao > button {
+        padding: 5px 10px;
+      }
+
+      .aviso {
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+    }
+
+    /* telas muito baixas: some o que é acessório para o menu caber */
+    @media (max-height: 640px) and (min-width: 701px) {
+      .busca,
+      aside h3 {
+        display: none;
+      }
+
+      .cartao .meta {
+        display: none;
+      }
+
+      .cartao > button {
+        padding: 4px 10px;
       }
 
       header h1 {
-        font-size: 23px;
-      }
-
-      .instituicao {
-        font-size: 9px;
+        font-size: 21px;
       }
 
       .subtitulo {
-        font-size: 11px;
+        display: none;
+      }
+    }
+
+    /* ---------- CELULAR: mapa em cima, menu em barra embaixo ---------- */
+    @media (max-width: 700px) {
+      header {
+        padding: 7px 12px 8px;
+      }
+
+      .instituicao {
+        font-size: 8.5px;
+        letter-spacing: .5px;
+      }
+
+      .instituicao .sep {
+        display: none;
+      }
+
+      .instituicao br {
+        display: inline;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      .subtitulo {
+        font-size: 10px;
       }
 
       .layout {
         flex-direction: column;
-        height: auto;
+      }
+
+      .mapa-container {
+        order: -1;
       }
 
       aside {
         width: 100%;
-        max-height: 270px;
-        padding: 15px;
+        flex: none;
+        gap: 7px;
+        padding: 8px 10px;
+        border-right: 0;
+        border-top: 1px solid var(--linha);
+        overflow: visible;
       }
 
-      .mapa-container {
-        height: 60vh;
-        min-height: 380px;
+      .busca, aside h3, aside .aviso, .info-botoes {
+        display: none;
+      }
+
+      .linha-movel {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .linha-movel .interruptor {
+        flex: 1;
+      }
+
+      .botao-info-movel {
+        display: block;
+        padding: 0 16px;
+        border: 1px solid var(--linha);
+        border-radius: 10px;
+        background: var(--fundo);
+        font: inherit;
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--verde);
+      }
+
+      .cartoes {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+      }
+
+      .cartao > button {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 3px;
+        padding: 6px 2px;
+      }
+
+      .cartao .txt {
+        justify-items: center;
+      }
+
+      .cartao .nome,
+      .cartao .meta,
+      .cartao .radio,
+      .faixa,
+      .achado {
+        display: none;
+      }
+
+      .cartao .nome-curto {
+        display: block;
+        font-size: 10.5px;
+        font-weight: bold;
+        line-height: 1.1;
+      }
+
+      .legenda .classes.duas {
+        column-count: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .interruptor .trilho,
+      .interruptor .trilho::after {
+        transition: none;
       }
     }
   </style>
@@ -208,7 +782,7 @@
   <header>
     <div class="instituicao">
       Universidade Federal de Goiás - UFG
-      <br>
+      <span class="sep">|</span><br>
       Instituto de Estudos Socioambientais - IESA
     </div>
 
@@ -223,81 +797,57 @@
   <main class="layout">
 
     <!-- PAINEL LATERAL -->
-    <aside>
-      <h2>Sobre o projeto</h2>
+    <aside aria-label="Camadas do mapa">
 
-      <p>
-        O GeoDiversidade AT é uma plataforma
-        de visualização e divulgação científica
-        dedicada ao estudo da geodiversidade
-        fluvial da Bacia Araguaia-Tocantins.
-      </p>
-
-      <p style="margin-top: 10px;">
-        O atlas apresenta a área de estudo e
-        será ampliado com mapas temáticos e
-        resultados do Índice de Geodiversidade
-        desenvolvido na pesquisa.
-      </p>
-
-      <h3>Camadas temáticas</h3>
-
-      <label class="camada">
-        <input type="checkbox"
-          id="controleBacia" checked>
-        Limite da bacia hidrográfica
-      </label>
-
-      <label class="camada indisponivel">
-        <input type="checkbox" disabled>
-        Geologia
-      </label>
-
-      <label class="camada indisponivel">
-        <input type="checkbox" disabled>
-        Tipos de solo
-      </label>
-
-      <label class="camada indisponivel">
-        <input type="checkbox" disabled>
-        Compartimentos geomorfológicos
-      </label>
-
-      <label class="camada indisponivel">
-        <input type="checkbox" disabled>
-        Formas de relevo
-      </label>
-
-      <label class="camada indisponivel">
-        <input type="checkbox" disabled>
-        Índice de Geodiversidade
-      </label>
-
-      <div class="aviso">
-        <strong>Pesquisa em desenvolvimento</strong>
-        <br>
-        Os mapas temáticos e o Índice de
-        Geodiversidade serão disponibilizados
-        após a conclusão e validação dos dados.
+      <div class="busca">
+        <svg width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-4-4"></path>
+        </svg>
+        <input type="search" id="buscaCamadas"
+          placeholder="Buscar camada ou classe"
+          aria-label="Buscar camada ou classe">
       </div>
 
-      <h3>Metodologia</h3>
+      <h3 class="titulo-area">Área de estudo</h3>
 
-      <p>
-        A pesquisa utiliza técnicas de
-        geoprocessamento e análise espacial
-        em ambiente SIG para caracterizar
-        a geodiversidade da área estudada.
-      </p>
+      <div class="linha-movel">
+        <label class="interruptor">
+          <span>Limite da bacia hidrográfica</span>
+          <input type="checkbox"
+            id="controleBacia" checked>
+          <span class="trilho"></span>
+        </label>
 
-      <h3>Instituição</h3>
+        <button type="button" class="botao-info-movel"
+          id="botaoInfoMovel">Info</button>
+      </div>
 
-      <p>
-        Universidade Federal de Goiás (UFG)
-        <br>
-        Instituto de Estudos Socioambientais
-        (IESA)
-      </p>
+      <h3>Camadas temáticas <em id="contagemCamadas"></em></h3>
+
+      <!-- Cartões gerados pelo script a partir de CAMADAS_TEMATICAS -->
+      <div id="listaCamadas" class="cartoes"></div>
+
+      <div class="rodape-painel">
+        <div class="aviso">
+          <strong>Pesquisa em desenvolvimento</strong>
+          <br>
+          Os mapas temáticos e o Índice de
+          Geodiversidade serão disponibilizados
+          após a conclusão e validação dos dados.
+        </div>
+
+        <div class="info-botoes" role="group"
+          aria-label="Informações do projeto"
+          style="margin-top: 9px;">
+          <button type="button" data-info="sobre">Sobre o projeto</button>
+          <button type="button" data-info="metodologia">Metodologia</button>
+          <button type="button" data-info="instituicao">Instituição</button>
+          <button type="button" data-info="equipe">Equipe de pesquisa</button>
+        </div>
+      </div>
     </aside>
 
     <!-- MAPA -->
@@ -307,11 +857,71 @@
 
   </main>
 
+  <!-- TEXTOS INFORMATIVOS (exibidos na janela "Informações") -->
+  <div id="textosInfo" hidden>
+    <section data-chave="sobre" data-titulo="Sobre o projeto">
+      <p>
+        O GeoDiversidade AT é uma plataforma
+        de visualização e divulgação científica
+        dedicada ao estudo da geodiversidade
+        fluvial da Bacia Araguaia-Tocantins.
+      </p>
+
+      <p>
+        O atlas apresenta a área de estudo e
+        será ampliado com mapas temáticos e
+        resultados do Índice de Geodiversidade
+        desenvolvido na pesquisa.
+      </p>
+    </section>
+
+    <section data-chave="metodologia" data-titulo="Metodologia">
+      <p>
+        A pesquisa utiliza técnicas de
+        geoprocessamento e análise espacial
+        em ambiente SIG para caracterizar
+        a geodiversidade da área estudada.
+      </p>
+    </section>
+
+    <section data-chave="instituicao" data-titulo="Instituição">
+      <p>
+        Universidade Federal de Goiás (UFG)
+        <br>
+        Instituto de Estudos Socioambientais
+        (IESA)
+      </p>
+    </section>
+
+    <section data-chave="equipe" data-titulo="Equipe de Pesquisa">
+      <h4 class="grupo">Discentes</h4>
+      <ul class="equipe">
+        <li>Agatha Aguiar Pereira</li>
+        <li>Julia Neves Dutra</li>
+      </ul>
+
+      <h4 class="grupo">Docente</h4>
+      <ul class="equipe">
+        <li>Dr. Maximiliano Bayer</li>
+      </ul>
+    </section>
+  </div>
+
+  <dialog class="info" id="janelaInfo"
+    aria-labelledby="tituloInfo">
+    <div class="topo">
+      <h2 id="tituloInfo"></h2>
+      <button type="button" class="fechar" id="fecharInfo"
+        aria-label="Fechar">&times;</button>
+    </div>
+    <div class="corpo" id="corpoInfo"></div>
+  </dialog>
+
   <!-- RODAPÉ -->
   <footer>
     GeoDiversidade AT | Pesquisa acadêmica
     desenvolvida no âmbito da UFG - IESA
-    <br>
+    <span class="sep">&middot;</span>
     Plataforma de divulgação científica.
     Não constitui portal institucional oficial.
   </footer>
@@ -320,9 +930,17 @@
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
   </script>
 
+  <!-- Fatia o GeoJSON em tiles vetoriais (zoom rápido) -->
+  <script
+    src="https://unpkg.com/geojson-vt@3.2.1/geojson-vt.js">
+  </script>
+
   <script>
     // INICIALIZAÇÃO DO MAPA
-    const map = L.map('map').setView([-12, -49], 5);
+    // preferCanvas: desenha os polígonos em um único <canvas>
+    // (bem mais rápido no zoom do que um elemento SVG por feição)
+    const map = L.map('map', { preferCanvas: true })
+      .setView([-12, -49], 5);
 
     // MAPA-BASE OPENSTREETMAP
     const mapaRuas = L.tileLayer(
@@ -380,7 +998,9 @@
     }).addTo(map);
 
     // CARREGAMENTO DO GEOJSON
-    fetch('bacia araguaia.geojson')
+    // bacia_web.geojson = versão simplificada de
+    // "bacia araguaia.geojson" (mantida como original do QGIS)
+    fetch('bacia_web.geojson')
       .then(response => {
         if (!response.ok) {
           throw new Error(
@@ -412,12 +1032,771 @@
     // CONTROLE DA CAMADA DA BACIA
     document.getElementById('controleBacia')
       .addEventListener('change', function() {
+        map.closePopup();
+
         if (this.checked) {
           map.addLayer(camadaBacia);
         } else {
           map.removeLayer(camadaBacia);
         }
       });
+
+    // ==========================================================
+    // CAMADAS TEMÁTICAS
+    // Para ativar uma camada: preencha "arquivo" com o nome do
+    // GeoJSON (na raiz do repositório) e, se quiser cores por
+    // categoria, "campo" (coluna do QGIS) e "cores".
+    // Sem "arquivo", a camada aparece desativada no painel.
+    // ==========================================================
+    const CAMADAS_TEMATICAS = [
+      {
+        id: 'geologia',
+        nome: 'Geologia',
+        arquivo: 'geologia.geojson',  // nome do GeoJSON
+        campo: 'classe',              // coluna que define a cor
+        // "campos": atributos mostrados no popup (coluna: rótulo)
+        campos: {
+          classe: 'Era',
+          unidade: 'Unidade',
+          sigla: 'Sigla',
+          era: 'Período',
+          provincia: 'Província',
+          litologia: 'Litologia'
+        },
+        cores: {
+          // Cores e ordem iguais ao mapa em PNG (QGIS)
+          'Arqueano': '#8c564b',
+          'Cenozoico': '#c7a5a9',
+          'Mesoproterozoico': '#65a69a',
+          'Mesozoico': '#d98c78',
+          'Neoproterozoico': '#b09acb',
+          "Corpos d'água continentais": '#258cc4',
+          'Paleoproterozoico': '#d9a441',
+          'Paleozoico': '#8baa65'
+        },
+        corPadrao: '#8e6c4a'
+      },
+      {
+        id: 'solos',
+        nome: 'Tipos de solo',
+        arquivo: 'solos.geojson',
+        campo: 'solos_cert',
+        campos: { solos_cert: 'Classe de solo' },
+        cores: {
+          // Cores e ordem iguais ao mapa em PNG (QGIS)
+          'Afloramentos de Rochas': '#5d6d7e',
+          'Argissolos': '#cd853f',
+          'Cambissolos': '#a0522d',
+          "Corpos d'Água": '#3498db',
+          'Gleissolos': '#85929e',
+          'Latossolos': '#d73027',
+          'Luvissolos': '#f39c12',
+          'Neossolos': '#f9e79f',
+          'Nitossolos': '#922b21',
+          'Organossolos': '#512e5f',
+          'Planossolos': '#d4ac0d',
+          'Plintossolos': '#d98880'
+          // Espodossolos, Área Urbana, Chernossolos, Dunas e "Outras
+          // Classes" estão nos dados, mas não na legenda do PNG:
+          // por isso ficam sem preenchimento (não entram em "cores").
+        },
+        corPadrao: '#b5651d'
+      },
+      {
+        id: 'geomorfologia',
+        nome: 'Compartimentos geomorfológicos',
+        arquivo: 'compartimentos.geojson',
+        campo: 'classe',
+        contorno: false,   // sem as linhas entre unidades da mesma cor
+        campos: {
+          classe: 'Compartimento',
+          dominio: 'Domínio',
+          regiao: 'Região',
+          unidade: 'Unidade'
+        },
+        cores: {
+          // Cores e ordem iguais ao mapa em PNG (QGIS)
+          'Chapadas': '#d9b86c',
+          "Corpo d'água continental": '#4f91b8',
+          'Depressões': '#a8be8a',
+          'Patamares': '#c98278',
+          'Planaltos': '#a99bcb',
+          'Planícies': '#8fc7c0',
+          'Serras': '#ea402d',
+          'Tabuleiros': '#d69a68'
+        },
+        corPadrao: '#5b8c5a'
+      },
+      {
+        id: 'relevo',
+        nome: 'Formas de relevo',
+        arquivo: 'relevo.geojson',
+        campo: 'classe',
+        campos: {
+          classe: 'Forma',
+          natureza: 'Natureza',
+          compartimento: 'Compartimento',
+          unidade: 'Unidade',
+          dominio: 'Domínio'
+        },
+        cores: {
+          // Cores e ordem iguais ao mapa em PNG (QGIS).
+          // Corpos d'água não têm classe: ficam sem preenchimento.
+          'Carste': '#71866a',
+          'Em ravina': '#b58a67',
+          'Encosta íngreme de erosão': '#c17c70',
+          'Ilha rochosa': '#a87589',
+          'Pedimento': '#6f91b2',
+          'Pediplano': '#9a88b5',
+          'Planície': '#d2bf7d',
+          'Planície e terraço': '#587f9a',
+          'Plano abaciado': '#79aeb4',
+          'Plano coluvial': '#6da18b',
+          'Plano de gênese indiferenciada': '#a0b17d',
+          'Terraço': '#c59aa6',
+          'Topo aguçado': '#c4ad8a',
+          'Topo convexo': '#9c4069',
+          'Topo tabular': '#89939c'
+        },
+        corPadrao: '#7a6fb0'
+      },
+      {
+        id: 'geodiversidade',
+        nome: 'Índice de Geodiversidade',
+        arquivo: 'indice.geojson',
+        campo: 'classe',
+        contorno: false,   // células pequenas: sem linha de contorno
+        // Classes do índice (0 a 0,825), definidas no script de
+        // preparação dos dados. Cortes (estimados do PNG):
+        // ≤0,175 Muito Baixa | ≤0,35 Baixa | ≤0,51 Média |
+        // ≤0,667 Alta | acima, Muito Alta.
+        campos: {
+          classe: 'Classe',
+          indice_geo: 'Índice de Geodiversidade',
+          geologia: 'Geologia (normalizada)',
+          relevo: 'Formas de relevo (normalizadas)',
+          compartimentos: 'Compartimentos (normalizados)',
+          solos: 'Solos (normalizados)'
+        },
+        cores: {
+          // Cores e ordem iguais ao mapa em PNG (QGIS)
+          'Muito Baixa': '#e1e79f',
+          'Baixa': '#ffbf68',
+          'Média': '#d9a441',
+          'Alta': '#ff5c2a',
+          'Muito Alta': '#b10000'
+        },
+        corPadrao: '#d9822b'
+      }
+    ];
+
+    const camadasCarregadas = {};
+
+    function corDaFeicao(cfg, props) {
+      const valor = cfg.campo ? props[cfg.campo] : null;
+      return cfg.cores[valor] || cfg.corPadrao;
+    }
+
+    // ----------------------------------------------------------
+    // CAMADAS EM TILES VETORIAIS (geojson-vt)
+    // O GeoJSON é fatiado em "tiles" e generalizado por nível de
+    // zoom. A cada zoom só os tiles visíveis são desenhados, então
+    // o mapa continua rápido mesmo com milhares de vértices.
+    // ----------------------------------------------------------
+    const EXTENSAO_TILE = 4096;
+    const ZOOM_MAX_TILE = 14;
+
+    function criarCamadaTiles(cfg, data) {
+      const indice = geojsonvt(data, {
+        maxZoom: ZOOM_MAX_TILE,
+        indexMaxZoom: 5,
+        tolerance: 3,
+        extent: EXTENSAO_TILE,
+        buffer: 64
+      });
+
+      const Grade = L.GridLayer.extend({
+        createTile: function(coords) {
+          const tam = this.getTileSize();
+          const dpr = window.devicePixelRatio || 1;
+          const canvas = L.DomUtil.create('canvas', 'leaflet-tile');
+          canvas.width = tam.x * dpr;
+          canvas.height = tam.y * dpr;
+
+          const tile = indice.getTile(coords.z, coords.x, coords.y);
+          if (!tile) return canvas;
+
+          const ctx = canvas.getContext('2d');
+          const escala = (tam.x * dpr) / EXTENSAO_TILE;
+          ctx.scale(escala, escala);
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = (0.6 * EXTENSAO_TILE) / tam.x;
+          ctx.strokeStyle = '#444';
+
+          const ocultas = classesOcultas(cfg);
+
+          // Agrupa por classe para trocar a cor só uma vez por grupo
+          const grupos = {};
+          tile.features.forEach(f => {
+            if (f.type !== 3) return;
+            const classe = cfg.campo ? (f.tags || {})[cfg.campo] : '_';
+            if (ocultas.has(classe)) return;
+            // Classe sem cor definida em "cores" = não desenhar
+            if (cfg.campo && !(classe in cfg.cores)) return;
+            (grupos[classe] || (grupos[classe] = [])).push(f);
+          });
+
+          const opacidade = cfg.opacidade == null ? 1 : cfg.opacidade;
+          ctx.globalAlpha = opacidade;
+          Object.keys(grupos).forEach(classe => {
+            ctx.fillStyle = cfg.cores[classe] || cfg.corPadrao;
+
+            grupos[classe].forEach(f => {
+              ctx.beginPath();
+              f.geometry.forEach(anel => {
+                anel.forEach((p, i) => {
+                  if (i === 0) ctx.moveTo(p[0], p[1]);
+                  else ctx.lineTo(p[0], p[1]);
+                });
+                ctx.closePath();
+              });
+              ctx.fill('evenodd');
+
+              // Contorno desligado por padrão; use "contorno: true"
+              // na camada para voltar a desenhá-lo
+              if (cfg.contorno === true) {
+                ctx.globalAlpha = 1;
+                ctx.stroke();
+                ctx.globalAlpha = opacidade;
+              }
+            });
+          });
+          ctx.globalAlpha = 1;
+
+          return canvas;
+        }
+      });
+
+      const grade = new Grade({
+        zIndex: 5,                    // acima dos mapas-base
+        maxNativeZoom: ZOOM_MAX_TILE,
+        updateWhenZooming: false,
+        attribution: ''
+      });
+
+      return { grade: grade, indice: indice };
+    }
+
+    // Descobre qual feição está sob o ponto clicado (ou null)
+    function feicaoNoPonto(cfg, entrada, latlng) {
+      const z = Math.min(Math.round(map.getZoom()), ZOOM_MAX_TILE);
+      const tam = 256;
+      const p = map.project(latlng, z);
+      const tx = Math.floor(p.x / tam);
+      const ty = Math.floor(p.y / tam);
+      const tile = entrada.indice.getTile(z, tx, ty);
+      if (!tile) return null;
+
+      const x = ((p.x - tx * tam) / tam) * EXTENSAO_TILE;
+      const y = ((p.y - ty * tam) / tam) * EXTENSAO_TILE;
+      const ocultas = classesOcultas(cfg);
+
+      for (const f of tile.features) {
+        if (f.type !== 3) continue;
+        const tags = f.tags || {};
+        if (cfg.campo && ocultas.has(tags[cfg.campo])) continue;
+        if (cfg.campo && !(tags[cfg.campo] in cfg.cores)) continue;
+
+        // Ray casting, regra par-ímpar (respeita buracos)
+        let dentro = false;
+        f.geometry.forEach(anel => {
+          for (let i = 0, j = anel.length - 1;
+               i < anel.length; j = i++) {
+            const xi = anel[i][0], yi = anel[i][1];
+            const xj = anel[j][0], yj = anel[j][1];
+            if ((yi > y) !== (yj > y) &&
+                x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+              dentro = !dentro;
+            }
+          }
+        });
+        if (dentro) return tags;
+      }
+      return null;
+    }
+
+    // Revisão ortográfica dos valores mostrados nos popups:
+    // - tira espaços duplicados e quebras de linha;
+    // - troca o acento agudo solto (d´água) pelo apóstrofo (d'água);
+    // - números no padrão brasileiro (vírgula decimal);
+    // - primeira letra maiúscula (siglas e códigos ficam como estão).
+    function formatarValor(valor, chave) {
+      if (typeof valor === 'number') {
+        return valor.toLocaleString('pt-BR', {
+          maximumFractionDigits: 3
+        });
+      }
+
+      let texto = String(valor)
+        .replace(/[´’`]/g, "'")
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (chave !== 'sigla') {
+        texto = texto.charAt(0).toLocaleUpperCase('pt-BR') +
+          texto.slice(1);
+      }
+      return texto;
+    }
+
+    function montarPopup(cfg, props) {
+      const caixa = document.createElement('div');
+
+      // Título: nome da camada, em negrito
+      const titulo = document.createElement('strong');
+      titulo.className = 'popup-titulo';
+      titulo.textContent = cfg.nome;
+      caixa.appendChild(titulo);
+
+      // Usa "campos" (coluna: rótulo) quando definido
+      const rotulos = cfg.campos || {};
+      const chaves = Object.keys(rotulos).length
+        ? Object.keys(rotulos).filter(k => props[k] != null)
+        : Object.keys(props).slice(0, 8);
+
+      // Linhas: "Rótulo:" em negrito, valor com inicial maiúscula
+      chaves.forEach(chave => {
+        const linha = document.createElement('div');
+        linha.className = 'popup-linha';
+
+        const rotulo = document.createElement('strong');
+        rotulo.textContent = (rotulos[chave] || chave) + ':';
+
+        linha.append(
+          rotulo,
+          ' ' + formatarValor(props[chave], chave));
+        caixa.appendChild(linha);
+      });
+      return caixa;
+    }
+
+    // Clique no mapa: abre o popup da camada temática ligada
+    map.on('click', function(e) {
+      for (let i = CAMADAS_TEMATICAS.length - 1; i >= 0; i--) {
+        const cfg = CAMADAS_TEMATICAS[i];
+        const entrada = camadasCarregadas[cfg.id];
+        if (!entrada || !map.hasLayer(entrada.grade)) continue;
+
+        const props = feicaoNoPonto(cfg, entrada, e.latlng);
+        if (props) {
+          L.popup()
+            .setLatLng(e.latlng)
+            .setContent(montarPopup(cfg, props))
+            .openOn(map);
+          return;
+        }
+      }
+    });
+
+    // Com camada temática ligada, o clique vai para ela e não
+    // para o polígono da bacia (que cobre toda a área)
+    function atualizarInteratividadeBacia() {
+      const algumaLigada = Object.values(camadasCarregadas)
+        .some(c => map.hasLayer(c.grade));
+      camadaBacia.eachLayer(l => {
+        l.options.interactive = !algumaLigada;
+      });
+      // Sem o véu verde por cima, para as cores ficarem fiéis
+      camadaBacia.setStyle({ fillOpacity: algumaLigada ? 0 : 0.20 });
+    }
+
+    // Legenda por categoria das camadas ligadas
+    const camadasLigadas = new Set();
+    const ocultasPorCamada = {};
+
+    function classesOcultas(cfg) {
+      if (!ocultasPorCamada[cfg.id]) {
+        ocultasPorCamada[cfg.id] = new Set();
+      }
+      return ocultasPorCamada[cfg.id];
+    }
+
+    // Mostra ou esconde uma classe (ex.: "Latossolos") no mapa
+    function alternarClasse(cfg, classe, visivel) {
+      // Filtro mudou: o popup aberto pode ser de uma classe oculta
+      map.closePopup();
+
+      const ocultas = classesOcultas(cfg);
+      if (visivel) ocultas.delete(classe);
+      else ocultas.add(classe);
+
+      const entrada = camadasCarregadas[cfg.id];
+      if (entrada) entrada.grade.redraw();
+    }
+
+    // Legenda do mapa: filtro por classe e opacidade da camada ligada
+    function atualizarLegenda() {
+      const alvo = document.getElementById('legendaCategorias');
+      if (!alvo) return;
+      alvo.textContent = '';
+
+      CAMADAS_TEMATICAS.forEach(cfg => {
+        if (!camadasLigadas.has(cfg.id) || !cfg.campo) return;
+
+        const titulo = document.createElement('strong');
+        titulo.textContent = cfg.nome;
+        alvo.appendChild(titulo);
+
+        const classes = document.createElement('div');
+        montarLegendaInterativa(classes, cfg);
+        alvo.appendChild(classes);
+        alvo.appendChild(controleDeOpacidade(cfg));
+      });
+    }
+
+    function alternarCamada(cfg, ligada, caixa) {
+      if (ligada) camadasLigadas.add(cfg.id);
+      else camadasLigadas.delete(cfg.id);
+      atualizarLegenda();
+
+      if (!ligada) {
+        if (camadasCarregadas[cfg.id]) {
+          map.removeLayer(camadasCarregadas[cfg.id].grade);
+        }
+        atualizarInteratividadeBacia();
+        return;
+      }
+
+      if (camadasCarregadas[cfg.id]) {
+        map.addLayer(camadasCarregadas[cfg.id].grade);
+        atualizarInteratividadeBacia();
+        return;
+      }
+
+      // Carrega o GeoJSON só na primeira vez que for ligado
+      fetch(encodeURI(cfg.arquivo))
+        .then(r => {
+          if (!r.ok) throw new Error('GeoJSON não encontrado');
+          return r.json();
+        })
+        .then(data => {
+          const entrada = criarCamadaTiles(cfg, data);
+          camadasCarregadas[cfg.id] = entrada;
+          if (opacidadePorCamada[cfg.id] != null) {
+            entrada.grade.setOpacity(opacidadePorCamada[cfg.id]);
+          }
+          if (caixa.checked) entrada.grade.addTo(map);
+          atualizarInteratividadeBacia();
+        })
+        .catch(erro => {
+          console.error(erro);
+          caixa.checked = false;
+          if (camadaAtiva === cfg.id) {
+            camadaAtiva = null;
+            camadasLigadas.delete(cfg.id);
+            atualizarLegenda();
+            desenharCartoes();
+          }
+          alert('Erro ao carregar a camada ' + cfg.nome + '.');
+        });
+    }
+
+    // ----------------------------------------------------------
+    // PAINEL EM CARTÕES
+    // Uma camada temática por vez (as cores são opacas e se
+    // cobririam). Clicar no cartão ativo desliga a camada.
+    // ----------------------------------------------------------
+    const ICONES_CAMADA = {
+      geologia: 'M3 8c3-2 6 2 9 0s6-2 9 0M3 13c3-2 6 2 9 0s6-2 9 0M3 18c3-2 6 2 9 0s6-2 9 0',
+      solos: 'M12 3c3 4.5 6 6.5 6 10.5a6 6 0 0 1-12 0C6 9.5 9 7.5 12 3z',
+      geomorfologia: 'M2.5 19l6-10 4 6 3-4 6 8z',
+      relevo: 'M4 12c0-4 4-7 8-7s8 3 8 7-4 7-8 7-8-3-8-7zM8 12c0-2 2-3.5 4-3.5s4 1.5 4 3.5-2 3.5-4 3.5-4-1.500-4-3.500z',
+      geodiversidade: 'M5 20v-8M12 20V5M19 20v-11'
+    };
+
+    const NOMES_CURTOS = {
+      geologia: 'Geologia',
+      solos: 'Solos',
+      geomorfologia: 'Compart.',
+      relevo: 'Relevo',
+      geodiversidade: 'Índice'
+    };
+
+    let camadaAtiva = null;
+    let caixaAtiva = null;
+    const opacidadePorCamada = {};
+
+    function iconeCamada(id) {
+      const ns = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(ns, 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('width', '19');
+      svg.setAttribute('height', '19');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '1.8');
+      svg.setAttribute('stroke-linecap', 'round');
+      svg.setAttribute('stroke-linejoin', 'round');
+      svg.setAttribute('aria-hidden', 'true');
+      const p = document.createElementNS(ns, 'path');
+      p.setAttribute('d', ICONES_CAMADA[id] || ICONES_CAMADA.geologia);
+      svg.appendChild(p);
+      return svg;
+    }
+
+    function selecionarCamada(id) {
+      const anterior = camadaAtiva;
+
+      // O clique anterior não vale mais para a nova camada
+      map.closePopup();
+
+      if (anterior) {
+        caixaAtiva.checked = false;
+        alternarCamada(
+          CAMADAS_TEMATICAS.find(c => c.id === anterior),
+          false, caixaAtiva);
+      }
+
+      camadaAtiva = (anterior === id) ? null : id;
+
+      if (camadaAtiva) {
+        caixaAtiva = { checked: true };
+        alternarCamada(
+          CAMADAS_TEMATICAS.find(c => c.id === camadaAtiva),
+          true, caixaAtiva);
+      }
+
+      desenharCartoes();
+    }
+
+    // Classes com caixas de seleção (marcar/desmarcar no mapa)
+    function montarLegendaInterativa(alvo, cfg) {
+      alvo.textContent = '';
+      const ocultas = classesOcultas(cfg);
+      const nomes = Object.keys(cfg.cores);
+
+      const atalhos = document.createElement('div');
+      atalhos.className = 'atalhos';
+      [['Todas', true], ['Nenhuma', false]].forEach(([texto, valor]) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = texto;
+        b.addEventListener('click', () => {
+          nomes.forEach(c => alternarClasse(cfg, c, valor));
+          montarLegendaInterativa(alvo, cfg);
+        });
+        atalhos.appendChild(b);
+      });
+      alvo.appendChild(atalhos);
+
+      // Listas longas se dividem em duas colunas (sem rolagem)
+      const lista = document.createElement('div');
+      lista.className = 'classes' + (nomes.length > 8 ? ' duas' : '');
+
+      nomes.forEach(classe => {
+        const linha = document.createElement('label');
+        linha.className = 'cl' + (ocultas.has(classe) ? ' off' : '');
+
+        const caixa = document.createElement('input');
+        caixa.type = 'checkbox';
+        caixa.checked = !ocultas.has(classe);
+        caixa.addEventListener('change', function() {
+          alternarClasse(cfg, classe, this.checked);
+          linha.classList.toggle('off', !this.checked);
+        });
+
+        const cor = document.createElement('i');
+        cor.style.background = cfg.cores[classe];
+
+        const nome = document.createElement('span');
+        nome.textContent = classe;
+
+        linha.append(caixa, cor, nome);
+        lista.appendChild(linha);
+      });
+
+      alvo.appendChild(lista);
+    }
+
+    function controleDeOpacidade(cfg) {
+      const caixa = document.createElement('div');
+      caixa.className = 'opac';
+
+      const valor = Math.round(
+        (opacidadePorCamada[cfg.id] == null
+          ? 1 : opacidadePorCamada[cfg.id]) * 100);
+
+      const rotulo = document.createElement('label');
+      rotulo.textContent = 'Opacidade';
+      rotulo.htmlFor = 'opacidade-' + cfg.id;
+
+      const faixa = document.createElement('input');
+      faixa.type = 'range';
+      faixa.id = 'opacidade-' + cfg.id;
+      faixa.min = 20;
+      faixa.max = 100;
+      faixa.value = valor;
+
+      const saida = document.createElement('output');
+      saida.textContent = valor + '%';
+
+      faixa.addEventListener('input', function() {
+        const v = this.value / 100;
+        opacidadePorCamada[cfg.id] = v;
+        saida.textContent = this.value + '%';
+        const e = camadasCarregadas[cfg.id];
+        if (e) e.grade.setOpacity(v);
+      });
+
+      caixa.append(rotulo, faixa, saida);
+      return caixa;
+    }
+
+    function desenharCartoes() {
+      const lista = document.getElementById('listaCamadas');
+      const termo = document.getElementById('buscaCamadas')
+        .value.trim().toLowerCase();
+      lista.textContent = '';
+      let exibidos = 0;
+
+      CAMADAS_TEMATICAS.forEach(cfg => {
+        const classes = Object.keys(cfg.cores);
+        const achada = termo
+          ? classes.find(c => c.toLowerCase().includes(termo))
+          : null;
+        const nomeCasa = cfg.nome.toLowerCase().includes(termo);
+        if (termo && !nomeCasa && !achada) return;
+        exibidos++;
+
+        const ativo = cfg.id === camadaAtiva;
+        const cartao = document.createElement('div');
+        cartao.className = 'cartao' +
+          (ativo ? ' ativo' : '') +
+          (cfg.arquivo ? '' : ' indisponivel');
+
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.setAttribute('aria-pressed', String(ativo));
+        if (!cfg.arquivo) botao.disabled = true;
+
+        const ic = document.createElement('span');
+        ic.className = 'ic';
+        ic.appendChild(iconeCamada(cfg.id));
+
+        const txt = document.createElement('span');
+        txt.className = 'txt';
+
+        const nome = document.createElement('span');
+        nome.className = 'nome';
+        nome.textContent = cfg.nome;
+
+        const nomeCurto = document.createElement('span');
+        nomeCurto.className = 'nome-curto';
+        nomeCurto.textContent = NOMES_CURTOS[cfg.id] || cfg.nome;
+
+        const meta = document.createElement('span');
+        meta.className = 'meta';
+        meta.textContent = cfg.arquivo
+          ? classes.length + ' classes'
+          : 'Em breve';
+
+        const radio = document.createElement('span');
+        radio.className = 'radio';
+
+        txt.append(nome, nomeCurto, meta);
+        botao.append(ic, txt, radio);
+        botao.addEventListener('click', () => selecionarCamada(cfg.id));
+        cartao.appendChild(botao);
+
+        const faixa = document.createElement('div');
+        faixa.className = 'faixa';
+        classes.forEach(c => {
+          const i = document.createElement('i');
+          i.style.background = cfg.cores[c];
+          faixa.appendChild(i);
+        });
+        cartao.appendChild(faixa);
+
+        if (achada && termo && !nomeCasa) {
+          const a = document.createElement('div');
+          a.className = 'achado';
+          a.textContent = 'Contém: ' + achada;
+          cartao.appendChild(a);
+        }
+
+        lista.appendChild(cartao);
+      });
+
+      document.getElementById('contagemCamadas').textContent =
+        exibidos === CAMADAS_TEMATICAS.length
+          ? '' : exibidos + ' de ' + CAMADAS_TEMATICAS.length;
+
+      if (!exibidos) {
+        const vazio = document.createElement('p');
+        vazio.textContent = 'Nenhuma camada ou classe encontrada.';
+        lista.appendChild(vazio);
+      }
+    }
+
+    document.getElementById('buscaCamadas')
+      .addEventListener('input', desenharCartoes);
+
+    desenharCartoes();
+
+    // ----------------------------------------------------------
+    // JANELA DE INFORMAÇÕES (Sobre, Metodologia, Instituição)
+    // Os textos ficam em #textosInfo; a janela só os exibe.
+    // ----------------------------------------------------------
+    const janelaInfo = document.getElementById('janelaInfo');
+    const corpoInfo = document.getElementById('corpoInfo');
+    const tituloInfo = document.getElementById('tituloInfo');
+
+    function abrirInfo(chaves) {
+      corpoInfo.textContent = '';
+      const secoes = [...document.querySelectorAll('#textosInfo section')]
+        .filter(s => chaves.includes(s.dataset.chave));
+
+      if (secoes.length === 1) {
+        tituloInfo.textContent = secoes[0].dataset.titulo;
+        corpoInfo.append(...[...secoes[0].children].map(n => n.cloneNode(true)));
+      } else {
+        tituloInfo.textContent = 'Informações do projeto';
+
+        // Aviso de pesquisa em desenvolvimento (mesmo texto do painel)
+        const aviso = document.querySelector('aside .aviso');
+        if (aviso) {
+          const a = aviso.cloneNode(true);
+          a.style.marginBottom = '6px';
+          corpoInfo.appendChild(a);
+        }
+
+        secoes.forEach(s => {
+          const t = document.createElement('h3');
+          t.textContent = s.dataset.titulo;
+          corpoInfo.appendChild(t);
+          s.childNodes.forEach(n => corpoInfo.appendChild(n.cloneNode(true)));
+        });
+      }
+
+      janelaInfo.showModal();
+    }
+
+    document.querySelectorAll('[data-info]').forEach(b => {
+      b.addEventListener('click', () => abrirInfo([b.dataset.info]));
+    });
+
+    document.getElementById('botaoInfoMovel')
+      .addEventListener('click',
+        () => abrirInfo(
+          ['sobre', 'metodologia', 'instituicao', 'equipe']));
+
+    document.getElementById('fecharInfo')
+      .addEventListener('click', () => janelaInfo.close());
+
+    // Clique fora da janela também fecha
+    janelaInfo.addEventListener('click', e => {
+      if (e.target === janelaInfo) janelaInfo.close();
+    });
 
     // CONTROLE DOS MAPAS-BASE
     L.control.layers(
@@ -447,11 +1826,29 @@
     legenda.onAdd = function() {
       const div = L.DomUtil.create('div', 'legenda');
 
+      // Cliques na legenda não devem mexer no mapa
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
+
       div.innerHTML = `
-        <strong>Legenda</strong>
-        <span class="simbolo"></span>
-        Limite da bacia
+        <button type="button" class="cab-leg"
+          aria-expanded="true">Legenda</button>
+        <div class="corpo-leg">
+          <span class="simbolo"></span>
+          Limite da bacia
+          <div id="legendaCategorias"></div>
+        </div>
       `;
+
+      // Recolher/expandir (no celular começa recolhida)
+      const botao = div.querySelector('.cab-leg');
+      const alternar = recolher => {
+        div.classList.toggle('recolhida', recolher);
+        botao.setAttribute('aria-expanded', String(!recolher));
+      };
+      botao.addEventListener('click',
+        () => alternar(!div.classList.contains('recolhida')));
+      alternar(window.matchMedia('(max-width: 700px)').matches);
 
       return div;
     };
